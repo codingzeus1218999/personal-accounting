@@ -37,4 +37,30 @@ Method: POST
 Payload: email, password
 ```
 
+```
+get transactions list:
+URI: {{baseurl}}/api/transactions
+Method: GET
+Params: title, type, amount_min, amount_max, start_date, end_date
+```
+
+```
+get specific transaction:
+URI: {{baseurl}}/api/transactions/{{transaction_id}}
+Method: GET
+```
+
+```
+create a new transaction:
+URI: {{baseurl}}/api/transaction
+Method: POST
+Payload: amount, title
+```
+
+```
+delete an existing transaction:
+URI: {{baseurl}}/api/transaction/{{transaction_id}}
+Method: DELETE
+```
+
 ## 🤣 Enjoy 🤣

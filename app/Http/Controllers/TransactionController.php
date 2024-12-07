@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Log;
+use App\Mail\TransactionCreatedMail;
+use App\Events\TransactionCreated;
+use Illuminate\Support\Facades\Mail;
 
 class TransactionController extends Controller
 {
@@ -53,6 +56,26 @@ class TransactionController extends Controller
                 'amount' => $validated['amount'],
                 'author_id' => auth()->id(),
             ]);
+
+            Log::info('Transaction created', [
+                'transaction_id' => $transaction->id,
+                'user_id' => auth()->id(),
+                'title' => $transaction->title,
+                'amount' => $transaction->amount,
+            ]);
+
+            try {
+                Mail::to(auth()->user()->email)->send(new TransactionCreatedMail($transaction));
+            } catch (\Exception $e) {
+                \Log::error('Mail Sending Error: ' . $e->getMessage());
+                return response()->json([
+                    'status' => false,
+                    'data' => null,
+                    'message' => 'Failed to send the email: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            event(new TransactionCreated($transaction));
 
             return $this->successResponse($transaction, 'Transaction added successfully.', 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
