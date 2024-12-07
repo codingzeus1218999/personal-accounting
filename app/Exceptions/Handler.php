@@ -38,4 +38,14 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    protected function unauthenticated($request, \Illuminate\Auth\AuthenticationException $exception)
+    {
+        return response()->json([
+            'status' => false,
+            'data' => null,
+            'message' => 'Unauthenticated. Token is missing or invalid.',
+        ], 401);
+    }
+    
 }
