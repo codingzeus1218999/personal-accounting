@@ -25,6 +25,10 @@ php artisan db:seed
 ```
 7.
 ```
+composer dump-autoload
+```
+8.
+```
 php artisan serve
 ```
 

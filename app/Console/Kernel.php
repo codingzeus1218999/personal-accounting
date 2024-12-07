@@ -19,7 +19,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+            Cache::forget('currency_rates_json');
+            Cache::forget('currency_rates_xml');
+            Cache::forget('currency_rates_csv');
+        })->everyFiveMinutes();
     }
 
     /**

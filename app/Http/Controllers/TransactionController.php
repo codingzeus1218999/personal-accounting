@@ -137,4 +137,25 @@ class TransactionController extends Controller
             'message' => $message,
         ], $status);
     }
+
+    public function currentBalance(Request $request)
+    {
+        $user = auth()->user();
+        $query = $user->transactions();
+
+        // Filter by date range
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
+        }
+
+        $income = $query->where('amount', '>', 0)->sum('amount');
+        $outcome = $query->where('amount', '<', 0)->sum('amount');
+        $total = $income + $outcome;
+
+        return response()->json([
+            'income' => $income,
+            'outcome' => $outcome,
+            'total' => $total,
+        ]);
+    }
 }
